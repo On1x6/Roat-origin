@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Roast & Origin — Specialty Coffee Roastery</title>
+  <meta name="description" content="Small-batch specialty coffee from Ethiopia, Colombia and Brazil, roasted to order." />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet" />
+
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body class="bg-cream text-ink antialiased">
+
+  <!-- ============ HEADER ============ -->
+  <header class="site-header sticky top-0 z-30">
+    <div class="mx-auto flex max-w-6xl items-center justify-between px-4 py-4 sm:px-6">
+      <a href="#top" class="font-display text-2xl font-bold tracking-tight">Roast <span class="text-accent">&amp;</span> Origin</a>
+      <nav class="hidden items-center gap-8 text-sm font-medium md:flex" aria-label="Primary">
+        <a href="#shop" class="hover:text-accent">Shop</a>
+        <a href="#subscribe" class="hover:text-accent">Subscribe</a>
+        <a href="#about" class="hover:text-accent">Our Roastery</a>
+      </nav>
+      <div class="flex items-center gap-2">
+        <button class="btn btn-ghost hidden sm:inline-flex" data-action="open-wizard">Build a subscription</button>
+        <button class="btn btn-primary relative" data-action="open-cart" aria-label="Open cart">
+          <svg class="h-5 w-5" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M6 6h15l-1.5 9h-12L6 6zm0 0L5 3H2M9 20a1 1 0 100-2 1 1 0 000 2zm9 0a1 1 0 100-2 1 1 0 000 2z"/></svg>
+          <span>Cart</span>
+          <span id="cart-count" class="cart-count" hidden>0</span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <main id="top">
+    <!-- ============ HERO ============ -->
+    <section class="hero">
+      <div class="mx-auto max-w-6xl px-4 py-20 sm:px-6 sm:py-28">
+        <p class="eyebrow">Small-batch · Roasted to order</p>
+        <h1 class="font-display mt-4 max-w-2xl text-5xl font-bold leading-[1.05] sm:text-6xl">
+          Single-origin coffee, roasted the week you drink it.
+        </h1>
+        <p class="mt-6 max-w-xl text-lg text-ink/70">
+          We buy directly from producers in Ethiopia, Colombia and Brazil, then roast in 12 kg batches
+          and ship within 48 hours.
+        </p>
+        <div class="mt-8 flex flex-wrap gap-3">
+          <a href="#shop" class="btn btn-primary btn-lg">Shop the coffees</a>
+          <button class="btn btn-ghost btn-lg" data-action="open-wizard">Build a subscription</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ CATALOG ============ -->
+    <section id="shop" class="mx-auto max-w-6xl px-4 py-16 sm:px-6">
+      <div class="flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between">
+        <div>
+          <p class="eyebrow">The Lineup</p>
+          <h2 class="font-display mt-2 text-3xl font-bold sm:text-4xl">Current offerings</h2>
+        </div>
+        <p id="result-count" class="text-sm text-ink/60" aria-live="polite"></p>
+      </div>
+
+      <!-- Filters -->
+      <div class="mt-8 space-y-4">
+        <div class="flex flex-col gap-3 sm:flex-row">
+          <label class="relative flex-1">
+            <span class="sr-only">Search coffees</span>
+            <svg class="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-ink/40" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path stroke-linecap="round" d="M21 21l-4.3-4.3"/></svg>
+            <input id="search-input" type="search" placeholder="Search by name, region or flavor (try “blueberry”)"
+                   class="field w-full pl-10" autocomplete="off" />
+          </label>
+          <label>
+            <span class="sr-only">Sort</span>
+            <select id="sort-select" class="field w-full sm:w-52">
+              <option value="featured">Featured</option>
+              <option value="price-asc">Price: Low to High</option>
+              <option value="price-desc">Price: High to Low</option>
+              <option value="name">Name: A–Z</option>
+            </select>
+          </label>
+        </div>
+
+        <div class="flex flex-wrap items-center gap-x-8 gap-y-3">
+          <div class="flex flex-wrap items-center gap-2" id="origin-filters" role="group" aria-label="Filter by origin">
+            <span class="filter-label">Origin</span>
+          </div>
+          <div class="flex flex-wrap items-center gap-2" id="process-filters" role="group" aria-label="Filter by process">
+            <span class="filter-label">Process</span>
+          </div>
+          <button class="text-sm font-medium text-accent underline-offset-4 hover:underline" data-action="reset-filters">Reset</button>
+        </div>
+      </div>
+
+      <!-- Grid -->
+      <div id="product-grid" class="mt-10 grid gap-6 sm:grid-cols-2 lg:grid-cols-3"></div>
+
+      <div id="empty-state" class="mt-10 rounded-2xl border border-dashed border-ink/20 p-12 text-center" hidden>
+        <p class="font-display text-xl font-bold">No coffees match your filters</p>
+        <p class="mt-2 text-ink/60">Try a different search term or clear the filters.</p>
+        <button class="btn btn-primary mt-6" data-action="reset-filters">Clear filters</button>
+      </div>
+    </section>
+
+    <!-- ============ SUBSCRIPTION PROMO ============ -->
+    <section id="subscribe" class="mx-auto max-w-6xl px-4 pb-16 sm:px-6">
+      <div class="promo rounded-3xl p-8 text-cream sm:p-14">
+        <p class="eyebrow !text-gold">Never run out</p>
+        <h2 class="font-display mt-3 max-w-xl text-3xl font-bold sm:text-4xl">Save up to 15% with a coffee subscription.</h2>
+        <p class="mt-4 max-w-lg text-cream/75">Pick your coffee, grind and cadence. Pause, skip or cancel anytime.</p>
+        <button class="btn btn-gold btn-lg mt-8" data-action="open-wizard">Build my subscription</button>
+      </div>
+    </section>
+
+    <!-- ============ ABOUT ============ -->
+    <section id="about" class="border-t border-ink/10">
+      <div class="mx-auto grid max-w-6xl gap-10 px-4 py-16 sm:px-6 md:grid-cols-3">
+        <div>
+          <h3 class="font-display text-xl font-bold">Direct trade</h3>
+          <p class="mt-2 text-ink/70">We pay producers well above Fairtrade minimums and publish our prices.</p>
+        </div>
+        <div>
+          <h3 class="font-display text-xl font-bold">Roasted to order</h3>
+          <p class="mt-2 text-ink/70">Every bag is roasted after you order it and ships within 48 hours.</p>
+        </div>
+        <div>
+          <h3 class="font-display text-xl font-bold">Ground your way</h3>
+          <p class="mt-2 text-ink/70">Choose whole bean or a grind matched to your brewer — we grind right before packing.</p>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="bg-ink py-10 text-center text-sm text-cream/60">
+    © <span id="year"></span> Roast &amp; Origin. Demo storefront — no real payments are processed.
+  </footer>
+
+  <!-- ============ CART DRAWER ============ -->
+  <div id="cart-root" class="drawer-root" aria-hidden="true">
+    <div class="drawer-backdrop" data-action="close-cart"></div>
+    <aside class="drawer" role="dialog" aria-modal="true" aria-labelledby="cart-title">
+      <div class="flex items-center justify-between border-b border-ink/10 px-6 py-5">
+        <h2 id="cart-title" class="font-display text-2xl font-bold">Your cart</h2>
+        <button class="icon-btn" data-action="close-cart" aria-label="Close cart">✕</button>
+      </div>
+
+      <!-- Free shipping progress -->
+      <div class="border-b border-ink/10 bg-sand/60 px-6 py-4">
+        <p id="shipping-message" class="text-sm font-medium"></p>
+        <div class="progress mt-2" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" id="shipping-progressbar">
+          <div id="shipping-progress-fill" class="progress-fill"></div>
+        </div>
+      </div>
+
+      <div id="cart-items" class="flex-1 overflow-y-auto px-6 py-2"></div>
+
+      <div id="cart-empty" class="flex flex-1 flex-col items-center justify-center px-6 text-center" hidden>
+        <div class="text-5xl" aria-hidden="true">☕</div>
+        <p class="font-display mt-4 text-xl font-bold">Your cart is empty</p>
+        <p class="mt-1 text-ink/60">Find something delicious in the lineup.</p>
+        <button class="btn btn-primary mt-6" data-action="close-cart">Keep shopping</button>
+      </div>
+
+      <div id="cart-footer" class="border-t border-ink/10 px-6 py-5">
+        <div class="flex items-center justify-between text-sm text-ink/70">
+          <span>Subtotal</span><span id="cart-subtotal" class="font-semibold text-ink">$0.00</span>
+        </div>
+        <div class="mt-1 flex items-center justify-between text-sm text-ink/70">
+          <span>Shipping</span><span id="cart-shipping">—</span>
+        </div>
+        <button class="btn btn-primary btn-lg mt-4 w-full" data-action="checkout">Checkout</button>
+        <button class="mt-3 w-full text-center text-sm text-ink/50 underline-offset-4 hover:underline" data-action="clear-cart">Clear cart</button>
+      </div>
+    </aside>
+  </div>
+
+  <!-- ============ PRODUCT MODAL ============ -->
+  <div id="product-modal" class="modal" aria-hidden="true">
+    <div class="modal-backdrop" data-action="close-modal"></div>
+    <div class="modal-panel max-w-3xl" role="dialog" aria-modal="true" aria-label="Product details">
+      <button class="icon-btn absolute right-4 top-4 z-10" data-action="close-modal" aria-label="Close">✕</button>
+      <div id="product-modal-body"></div>
+    </div>
+  </div>
+
+  <!-- ============ SUBSCRIPTION WIZARD MODAL ============ -->
+  <div id="wizard-modal" class="modal" aria-hidden="true">
+    <div class="modal-backdrop" data-action="close-modal"></div>
+    <div class="modal-panel max-w-2xl" role="dialog" aria-modal="true" aria-labelledby="wizard-title">
+      <button class="icon-btn absolute right-4 top-4 z-10" data-action="close-modal" aria-label="Close">✕</button>
+      <div class="px-6 pt-8 sm:px-10">
+        <p class="eyebrow">Subscription builder</p>
+        <h2 id="wizard-title" class="font-display mt-1 text-2xl font-bold sm:text-3xl"></h2>
+        <div id="wizard-progress" class="wizard-dots mt-5" aria-hidden="true"></div>
+      </div>
+      <div id="wizard-body" class="px-6 py-6 sm:px-10" aria-live="polite"></div>
+      <div id="wizard-footer" class="flex items-center justify-between gap-3 border-t border-ink/10 px-6 py-4 sm:px-10"></div>
+    </div>
+  </div>
+
+  <!-- Toast -->
+  <div id="toast" class="toast" role="status" aria-live="polite"></div>
+
+  <!-- ============ TEMPLATES ============ -->
+  <template id="tpl-product-card">
+    <article class="product-card" data-product-id="">
+      <button class="card-visual bean-art" data-action="open-product" aria-label="View details">
+        <span class="badge"></span>
+        <span class="bag" aria-hidden="true"><span class="bag-label"></span></span>
+      </button>
+      <div class="flex flex-1 flex-col p-5">
+        <p class="card-origin text-xs font-semibold uppercase tracking-widest text-accent"></p>
+        <h3 class="card-name font-display mt-1 text-xl font-bold leading-snug"></h3>
+        <p class="card-notes mt-2 line-clamp-2 text-sm text-ink/65"></p>
+        <div class="card-taste mt-4"></div>
+        <div class="card-flavors mt-4 flex flex-wrap gap-1.5"></div>
+        <div class="card-grinds mt-5"></div>
+        <div class="mt-5 flex items-center justify-between gap-3 pt-1">
+          <div>
+            <span class="card-price text-xl font-semibold"></span>
+            <span class="text-xs text-ink/50">/ 12 oz</span>
+          </div>
+          <button class="btn btn-primary" data-action="add-to-cart">Add to cart</button>
+        </div>
+      </div>
+    </article>
+  </template>
+
+  <template id="tpl-cart-item">
+    <div class="cart-item" data-key="">
+      <div class="cart-thumb bean-art" aria-hidden="true"></div>
+      <div class="min-w-0 flex-1">
+        <div class="flex items-start justify-between gap-2">
+          <div class="min-w-0">
+            <p class="ci-name truncate font-semibold"></p>
+            <p class="ci-grind text-xs text-ink/55"></p>
+          </div>
+          <p class="ci-line font-semibold"></p>
+        </div>
+        <div class="mt-3 flex items-center justify-between">
+          <div class="qty">
+            <button data-action="qty-dec" aria-label="Decrease quantity">−</button>
+            <span class="ci-qty" aria-live="polite"></span>
+            <button data-action="qty-inc" aria-label="Increase quantity">+</button>
+          </div>
+          <button class="text-xs text-ink/50 underline-offset-4 hover:underline" data-action="remove-item">Remove</button>
+        </div>
+      </div>
+    </div>
+  </template>
+
+  <!-- Scripts: data first, then app logic -->
+  <script src="data/products.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
